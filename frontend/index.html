@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提示词对比实验室</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light">
+    <div class="container py-4">
+        <!-- 模型配置区域 -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">模型配置</h5>
+                <button id="toggleConfig" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-gear"></i> 配置
+                </button>
+            </div>
+            <div id="modelConfig" class="card-body d-none">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">平台选择</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="platform" id="deepseek" value="deepseek" checked>
+                                    <label class="form-check-label" for="deepseek">深度求索</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="platform" id="qwen" value="qwen">
+                                    <label class="form-check-label" for="qwen">阿里云百炼</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">API 密钥</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="apiKey" placeholder="请输入API密钥">
+                                <button class="btn btn-outline-secondary" type="button" id="toggleApiKey">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                <a href="#" id="getDeepseekKey">深度求索获取密钥</a> |
+                                <a href="#" id="getQwenKey">阿里云百炼获取密钥</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">API 地址</label>
+                            <input type="text" class="form-control" id="apiBase"
+                                   value="https://api.deepseek.com/v1"
+                                   placeholder="请输入API地址">
+                            <div class="form-text">预览: <span id="apiPreview">https://api.deepseek.com/v1/chat/completions</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label mb-0">模型选择</label>
+                        <button id="addModelBtn" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-plus"></i> 添加模型
+                        </button>
+                    </div>
+
+                    <div class="model-list" id="modelList">
+                        <!-- 模型列表将通过JS动态生成 -->
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-3">
+                    <button id="saveConfig" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i> 保存配置
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加模型模态框 -->
+        <div class="modal fade" id="addModelModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">添加模型</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">* 模型 ID</label>
+                            <input type="text" class="form-control" id="modelId"
+                                   placeholder="必填 例如 gpt-3.5-turbo">
+                            <div class="form-text">模型在API中的唯一标识</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">模型名称</label>
+                            <input type="text" class="form-control" id="modelName"
+                                   placeholder="例如 GPT-4">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">分组名称</label>
+                            <input type="text" class="form-control" id="modelGroup"
+                                   placeholder="例如 ChatGPT">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" id="confirmAddModel" class="btn btn-primary">添加模型</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 卡片控制区域 -->
+        <div class="d-flex justify-content-end mb-3">
+            <button id="removeCardBtn" class="btn btn-sm btn-outline-danger me-2" disabled>
+                <i class="bi bi-dash-circle"></i> 减少卡片
+            </button>
+            <button id="addCardBtn" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-plus-circle"></i> 增加卡片
+            </button>
+            <span class="ms-3 text-muted" id="cardCount">当前: 1/5 组卡片</span>
+        </div>
+
+        <!-- 动态提示词输入区域 -->
+        <div class="row mb-4" id="promptsContainer">
+            <!-- 提示词卡片将通过JS动态生成 -->
+        </div>
+
+        <div class="text-center mb-5">
+            <button id="generateBtn" class="btn btn-lg btn-dark px-5 py-3">
+                <i class="bi bi-lightning me-2"></i>生成对比结果
+            </button>
+            <div id="loading" class="mt-3 d-none">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">加载中...</span>
+                </div>
+                <span class="ms-2">正在生成响应，请稍候...</span>
+            </div>
+        </div>
+
+        <div id="resultsContainer" class="d-none">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h3 class="h5 mb-0">对比结果</h3>
+                    <div class="d-flex align-items-center">
+                        <span id="resultPlatform" class="badge bg-light text-dark"></span>
+                        <button class="btn btn-sm btn-outline-light ms-2" id="copyAllResults">
+                            <i class="bi bi-clipboard"></i> 复制全部
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="resultsRow">
+                        <!-- 结果将通过JS动态插入 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

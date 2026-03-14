@@ -1,0 +1,227 @@
+:root {
+    --primary-color: #4361ee;
+    --success-color: #06d6a0;
+    --info-color: #118ab2;
+    --warning-color: #ffd166;
+    --border-color: #e9ecef;
+}
+
+body {
+    padding-top: 10px;
+}
+
+.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.card-header {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.response-content {
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* 关键修复：移除所有前导空格 */
+    text-indent: 0 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+.stats-badge {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+    margin: 2px;
+    border-radius: 50px;
+}
+
+.prompt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.expand-icon {
+    transition: transform 0.3s;
+}
+
+.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.collapsed .response-content {
+    display: none;
+}
+
+.model-option {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.model-option:hover {
+    background: #e9ecef;
+    border-color: #0d6efd;
+}
+
+.model-option.active {
+    border-color: #0d6efd;
+    background: #e7f1ff;
+}
+
+.model-option .remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: none;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.model-option:hover .remove-btn {
+    display: block;
+}
+
+.model-group {
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.model-group-header {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #495057;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.model-group-header i {
+    margin-right: 8px;
+}
+
+.badge-platform {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    margin-left: 5px;
+}
+
+.model-count {
+    background: #0d6efd;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    margin-left: 5px;
+}
+
+.result-card .card-header {
+    padding: 8px 12px;
+}
+
+.result-card .card-body {
+    padding: 12px;
+}
+
+.result-card .response-content {
+    padding: 10px;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    background: #f8f9fa;
+    margin-top: 10px;
+    /* 关键修复：彻底移除首行空格 */
+    text-indent: 0 !important;
+}
+
+.result-card .stats-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.stats-badge {
+    background: #e9ecef;
+    border: 1px solid #ddd;
+}
+
+/* 关键修复：移除所有可能的空白 */
+.response-content::before {
+    content: '';
+    display: block;
+    height: 0;
+    margin-top: -1em;
+}
+
+.response-content * {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    text-indent: 0 !important;
+}
+
+/* 复制按钮样式 */
+.copy-prompt-btn,
+.copy-result-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+}
+
+.copy-prompt-btn:hover,
+.copy-result-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 卡片控制按钮 */
+#cardCount {
+    align-self: center;
+    font-size: 0.9rem;
+}
+
+/* 动态卡片动画 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dynamic-card {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .dynamic-card {
+        margin-bottom: 1rem !important;
+    }
+
+    .card-header {
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    .card-body {
+        padding: 0.75rem !important;
+    }
+}
